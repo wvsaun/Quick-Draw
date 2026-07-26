@@ -65,6 +65,14 @@ the settings view model. `AppCoordinator`'s job is done by `RootView`.
 - Frameworks: SwiftUI, CoreMotion, MultipeerConnectivity, AVFoundation, UIKit,
   XCTest. **No third-party dependencies.**
 
+**No Mac?** This repo ships a complete Mac-free workflow: GitHub Actions
+builds, tests, signs (Apple cloud-managed certificates), and uploads to
+TestFlight; iPhones install builds from the TestFlight app. See
+[`docs/TESTFLIGHT_SETUP.md`](docs/TESTFLIGHT_SETUP.md). CI TestFlight builds
+compile with the `TESTFLIGHT_TOOLS` condition so the diagnostics overlay,
+debug menu, and simulated opponent stay available for on-phone tuning; a
+manual dispatch with `include_tools` off produces a clean App Store build.
+
 ## Xcode setup
 
 1. Open `QuickDraw.xcodeproj`.
@@ -204,10 +212,19 @@ start/confirm thresholds without code changes.
 - Multipeer latency spikes only delay message *delivery* (results), never the
   measured reaction times.
 
+## Continuous integration
+
+`.github/workflows/ios.yml` runs on every push: the `test` job executes the
+full unit-test suite on an iOS simulator (macOS runner), and the `deploy` job
+(pushes to `main`, or manual dispatch) archives a cloud-signed Release build
+and uploads it to TestFlight. Setup, secrets, costs, and troubleshooting are
+documented in `docs/TESTFLIGHT_SETUP.md`.
+
 ## Simulator testing
 
 Core Motion and Multipeer radios don't work in the simulator, so DEBUG builds
-include tools that are fully compiled out of release builds:
+(and `TESTFLIGHT_TOOLS` CI builds) include tools that are fully compiled out
+of App Store release builds:
 
 - **Home → Practice vs. Tin Can Tex (Debug)** — a `SimulatedPeerLink` opponent
   that runs the entire real message protocol (lobby, calibration, positioning,

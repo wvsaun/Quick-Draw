@@ -11,6 +11,8 @@
 	</array>
 	<key>NSMotionUsageDescription</key>
 	<string>Quick Draw uses motion sensors to detect your draw during a duel. Motion data never leaves the game.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>accelerometer</string>

@@ -10,7 +10,7 @@ struct HomeView: View {
     @EnvironmentObject var settings: SettingsStore
     @State private var showHowToPlay = false
     @State private var showSettings = false
-    #if DEBUG
+    #if DEBUG || TESTFLIGHT_TOOLS
     @State private var showDebugMenu = false
     #endif
 
@@ -47,7 +47,7 @@ struct HomeView: View {
                         .buttonStyle(WesternButtonStyle(prominent: false))
                     Button("Settings") { showSettings = true }
                         .buttonStyle(WesternButtonStyle(prominent: false))
-                    #if DEBUG
+                    #if DEBUG || TESTFLIGHT_TOOLS
                     Button("Practice vs. Tin Can Tex (Debug)") { showDebugMenu = true }
                         .buttonStyle(WesternButtonStyle(prominent: false))
                         .font(.footnote)
@@ -65,7 +65,7 @@ struct HomeView: View {
         }
         .sheet(isPresented: $showHowToPlay) { HowToPlayView() }
         .sheet(isPresented: $showSettings) { SettingsView() }
-        #if DEBUG
+        #if DEBUG || TESTFLIGHT_TOOLS
         .sheet(isPresented: $showDebugMenu) { DebugMenuView() }
         #endif
     }

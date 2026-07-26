@@ -59,7 +59,7 @@ struct CountdownView: View {
                 }
                 Spacer()
 
-                #if DEBUG
+                #if DEBUG || TESTFLIGHT_TOOLS
                 debugControls
                 #endif
             }
@@ -98,7 +98,7 @@ struct CountdownView: View {
         }
     }
 
-    #if DEBUG
+    #if DEBUG || TESTFLIGHT_TOOLS
     @ViewBuilder
     private var debugControls: some View {
         if game.phase == .countdown || game.phase == .armed {

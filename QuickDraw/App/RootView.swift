@@ -20,7 +20,7 @@ struct RootView: View {
                 phaseView
             }
 
-            #if DEBUG
+            #if DEBUG || TESTFLIGHT_TOOLS
             if settings.diagnosticsEnabled {
                 DiagnosticsOverlay(model: game.diagnostics)
             }

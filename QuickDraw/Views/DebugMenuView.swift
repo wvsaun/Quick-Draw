@@ -2,11 +2,12 @@
 //  DebugMenuView.swift
 //  QuickDraw
 //
-//  DEBUG-only simulator tools: configure the scripted opponent and start a
+//  Development-only tools: configure the scripted opponent and start a
 //  practice match that exercises the full game flow without a second device.
+//  Compiled in DEBUG and TESTFLIGHT_TOOLS builds only.
 //
 
-#if DEBUG
+#if DEBUG || TESTFLIGHT_TOOLS
 import SwiftUI
 
 struct DebugMenuView: View {

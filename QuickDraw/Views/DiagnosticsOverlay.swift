@@ -2,11 +2,13 @@
 //  DiagnosticsOverlay.swift
 //  QuickDraw
 //
-//  DEBUG-only live tuning overlay. Attach at the root; visible only when the
-//  Developer diagnostics setting is on. Never compiled into release builds.
+//  Live tuning overlay. Attach at the root; visible only when the Developer
+//  diagnostics setting is on. Compiled only in DEBUG builds and in CI
+//  TestFlight builds that opt in via the TESTFLIGHT_TOOLS condition — never
+//  in App Store release builds.
 //
 
-#if DEBUG
+#if DEBUG || TESTFLIGHT_TOOLS
 import SwiftUI
 
 struct DiagnosticsOverlay: View {

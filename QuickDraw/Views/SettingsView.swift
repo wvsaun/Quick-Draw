@@ -53,11 +53,11 @@ struct SettingsView: View {
                     }
                 }
 
-                #if DEBUG
+                #if DEBUG || TESTFLIGHT_TOOLS
                 Section {
                     Toggle("Developer diagnostics", isOn: $settings.diagnosticsEnabled)
                 } footer: {
-                    Text("Shows a live overlay with motion values, detector state, and sync data. Debug builds only.")
+                    Text("Shows a live overlay with motion values, detector state, and sync data. Development builds only.")
                 }
                 #endif
 

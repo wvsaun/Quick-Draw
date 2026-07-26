@@ -720,7 +720,7 @@ final class GameViewModel: ObservableObject {
         opponentWantsRematch = false
         disconnectReason = nil
 
-        #if DEBUG
+        #if DEBUG || TESTFLIGHT_TOOLS
         if isSimulated {
             isSimulated = false
             link = PeerConnectionService()
@@ -762,7 +762,7 @@ final class GameViewModel: ObservableObject {
 
     // MARK: - DEBUG simulation controls
 
-    #if DEBUG
+    #if DEBUG || TESTFLIGHT_TOOLS
     /// Home screen: practice the full flow against the scripted opponent.
     func startPracticeVsSimulatedOpponent() {
         isSimulated = true

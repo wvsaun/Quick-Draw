@@ -2,13 +2,14 @@
 //  SimulatedPeerLink.swift
 //  QuickDraw
 //
-//  DEBUG-ONLY fake transport with a scripted opponent ("Tin Can Tex") so the
-//  entire game flow — lobby, calibration, positioning, countdown, resolution,
-//  rematch — can be exercised in the simulator where Multipeer Connectivity
-//  and Core Motion are unavailable. Never compiled into release builds.
+//  Development-only fake transport with a scripted opponent ("Tin Can Tex")
+//  so the entire game flow — lobby, calibration, positioning, countdown,
+//  resolution, rematch — can be exercised without a second device. Compiled
+//  in DEBUG builds and in CI TestFlight builds (TESTFLIGHT_TOOLS condition);
+//  never in App Store release builds.
 //
 
-#if DEBUG
+#if DEBUG || TESTFLIGHT_TOOLS
 import Foundation
 
 /// Knobs for the simulated opponent, adjustable from the debug menu.
