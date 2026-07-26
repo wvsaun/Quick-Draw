@@ -144,46 +144,50 @@ extension PeerConnectionService: MCSessionDelegate {
 
     func session(_ session: MCSession, peer peerID: MCPeerID,
                  didChange state: MCSessionState) {
-        switch state {
-        case .connecting:
-            emit(.connecting(peerName: prettyName(peerID.displayName)))
-        case .connected:
-            // First connected peer becomes THE opponent; stop discovery so a
-            // third player can never join mid-game.
-            if opponentPeerID == nil || opponentPeerID == peerID {
-                opponentPeerID = peerID
-                everConnected = true
-                advertiser?.stopAdvertisingPeer()
-                browser?.stopBrowsingForPeers()
-                duplicateFilter.reset()
-                emit(.connected(peerName: prettyName(peerID.displayName)))
-            } else {
-                Log.network.warning("Rejecting extra peer \(peerID.displayName, privacy: .public)")
-            }
-        case .notConnected:
-            if peerID == opponentPeerID {
-                opponentPeerID = nil
-                if everConnected {
-                    emit(.disconnected)
+        // MCSession calls this on an arbitrary queue; all service state is
+        // owned by the main queue, so hop before touching anything.
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            switch state {
+            case .connecting:
+                self.onEvent?(.connecting(peerName: self.prettyName(peerID.displayName)))
+            case .connected:
+                // First connected peer becomes THE opponent; stop discovery so
+                // a third player can never join mid-game.
+                if self.opponentPeerID == nil || self.opponentPeerID == peerID {
+                    self.opponentPeerID = peerID
+                    self.everConnected = true
+                    self.advertiser?.stopAdvertisingPeer()
+                    self.browser?.stopBrowsingForPeers()
+                    self.duplicateFilter.reset()
+                    self.onEvent?(.connected(peerName: self.prettyName(peerID.displayName)))
                 } else {
-                    // Our invitation was declined, timed out, or the
-                    // handshake failed before ever connecting.
-                    emit(.failed("Could not connect. Try again."))
+                    Log.network.warning("Rejecting extra peer \(peerID.displayName, privacy: .public)")
                 }
+            case .notConnected:
+                if peerID == self.opponentPeerID {
+                    self.opponentPeerID = nil
+                    if self.everConnected {
+                        self.onEvent?(.disconnected)
+                    } else {
+                        // Our invitation was declined, timed out, or the
+                        // handshake failed before ever connecting.
+                        self.onEvent?(.failed("Could not connect. Try again."))
+                    }
+                }
+            @unknown default:
+                break
             }
-        @unknown default:
-            break
         }
     }
 
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
-        guard peerID == opponentPeerID else { return }
         do {
             let envelope = try MessageEnvelope.decode(data)
-            // MCSession delivers on an arbitrary queue; filter + forward on
-            // main so the duplicate filter and UI state stay single-threaded.
+            // MCSession delivers on an arbitrary queue; validate, filter and
+            // forward on main so all state stays single-threaded.
             DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
+                guard let self, peerID == self.opponentPeerID else { return }
                 guard self.duplicateFilter.accept(envelope) else {
                     Log.network.debug("Dropped duplicate/stale seq \(envelope.seq)")
                     return
@@ -213,13 +217,15 @@ extension PeerConnectionService: MCNearbyServiceAdvertiserDelegate {
                     didReceiveInvitationFromPeer peerID: MCPeerID,
                     withContext context: Data?,
                     invitationHandler: @escaping (Bool, MCSession?) -> Void) {
-        // Two-player limit: accept only while no opponent is attached.
-        guard opponentPeerID == nil, let session else {
-            invitationHandler(false, nil)
-            return
+        DispatchQueue.main.async { [weak self] in
+            // Two-player limit: accept only while no opponent is attached.
+            guard let self, self.opponentPeerID == nil, let session = self.session else {
+                invitationHandler(false, nil)
+                return
+            }
+            self.opponentPeerID = peerID
+            invitationHandler(true, session)
         }
-        opponentPeerID = peerID
-        invitationHandler(true, session)
     }
 
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser,
@@ -234,13 +240,19 @@ extension PeerConnectionService: MCNearbyServiceBrowserDelegate {
 
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID,
                  withDiscoveryInfo info: [String: String]?) {
-        foundPeers[peerID.displayName] = peerID
-        emitDiscoveredPeers()
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.foundPeers[peerID.displayName] = peerID
+            self.emitDiscoveredPeers()
+        }
     }
 
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
-        foundPeers.removeValue(forKey: peerID.displayName)
-        emitDiscoveredPeers()
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.foundPeers.removeValue(forKey: peerID.displayName)
+            self.emitDiscoveredPeers()
+        }
     }
 
     func browser(_ browser: MCNearbyServiceBrowser,

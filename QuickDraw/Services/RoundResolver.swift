@@ -51,8 +51,17 @@ struct RoundResolver {
     }
 
     private func decide(roundID: UUID,
-                        _ a: PlayerRoundReport,
-                        _ b: PlayerRoundReport) -> ResolvedRound {
+                        _ rawA: PlayerRoundReport,
+                        _ rawB: PlayerRoundReport) -> ResolvedRound {
+
+        // A reaction faster than humanly possible (< minPlausibleReaction)
+        // means the player began the draw BEFORE the signal and merely
+        // finished after it — the detector can't flag that pre-motion itself
+        // when it completes post-signal, so the resolver reclassifies it as
+        // a false start. Negative values are left alone here and voided as
+        // corrupt data below.
+        let a = reclassifyAnticipation(rawA)
+        let b = reclassifyAnticipation(rawB)
 
         // False starts dominate everything else.
         switch (a.falseStart, b.falseStart) {
@@ -118,6 +127,12 @@ struct RoundResolver {
                                  margin: margin,
                                  photoFinish: margin <= configuration.photoFinishThreshold)
         }
+    }
+
+    private func reclassifyAnticipation(_ report: PlayerRoundReport) -> PlayerRoundReport {
+        guard let t = report.elapsed, t >= 0,
+              t < configuration.minPlausibleReaction else { return report }
+        return .falseStart(playerID: report.playerID, roundID: report.roundID)
     }
 
     private func falseStartLoss(roundID: UUID,

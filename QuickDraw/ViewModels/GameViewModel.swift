@@ -537,8 +537,9 @@ final class GameViewModel: ObservableObject {
             enterCalibration()
 
         case .calibrationDone(let playerID):
+            guard playerID == opponentProfile?.id else { return }
             calibrationGate.markComplete(playerID: playerID)
-            if playerID == opponentProfile?.id { opponentCalibrated = true }
+            opponentCalibrated = true
             if role == .host { checkCalibrationGate() }
 
         case .beginPositioning(let roundID):
@@ -546,7 +547,10 @@ final class GameViewModel: ObservableObject {
             enterPositioning(roundID: roundID)
 
         case .positionConfirmed(let playerID, _):
-            if playerID == opponentProfile?.id { opponentPositionConfirmed = true }
+            // Only the opponent may vote over the wire; our own vote is added
+            // locally in confirmPosition().
+            guard playerID == opponentProfile?.id else { return }
+            opponentPositionConfirmed = true
             if role == .host {
                 positionVotes.insert(playerID)
                 checkPositionGate()
