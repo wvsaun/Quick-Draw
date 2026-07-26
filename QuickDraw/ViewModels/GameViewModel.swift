@@ -265,6 +265,15 @@ final class GameViewModel: ObservableObject {
     func confirmPosition() {
         guard phase == .positioning, !localPositionConfirmed,
               let roundID = roundGate.currentRoundID else { return }
+        // A joiner must have at least one clock-sync exchange before the
+        // round can be scheduled: without an offset estimate, host timestamps
+        // are meaningless on this device (uptime clocks differ arbitrarily).
+        // The burst starts when positioning begins and lands in well under a
+        // second, so in practice this only defers a superhuman tap.
+        if role == .joiner && !isSimulated && !clockSync.hasEstimate {
+            schedule(after: 0.4) { [weak self] in self?.confirmPosition() }
+            return
+        }
         audio.buttonTap(); haptics.buttonTap()
         localPositionConfirmed = true
         link.send(.positionConfirmed(playerID: localPlayerID, roundID: roundID))
