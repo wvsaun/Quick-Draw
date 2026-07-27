@@ -2,21 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSLocalNetworkUsageDescription</key>
-	<string>Quick Draw uses the local network to connect two nearby iPhones for a duel. No data leaves your devices.</string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_quickdraw-duel._tcp</string>
 		<string>_quickdraw-duel._udp</string>
-	</array>
-	<key>NSMotionUsageDescription</key>
-	<string>Quick Draw uses motion sensors to detect your draw during a duel. Motion data never leaves the game.</string>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
-	<key>UIRequiredDeviceCapabilities</key>
-	<array>
-		<string>accelerometer</string>
-		<string>gyroscope</string>
 	</array>
 </dict>
 </plist>
