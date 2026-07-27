@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXContainerItemProxy section */
@@ -22,7 +22,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		A1A1A1A1A1A1A1A1A1A1A11B /* Exceptions for "QuickDraw" folder in "QuickDraw" target */ = {
+		A1A1A1A1A1A1A1A1A1A1A11B /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -32,19 +32,8 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		A1A1A1A1A1A1A1A1A1A1A105 /* QuickDraw */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				A1A1A1A1A1A1A1A1A1A1A11B /* Exceptions for "QuickDraw" folder in "QuickDraw" target */,
-			);
-			path = QuickDraw;
-			sourceTree = "<group>";
-		};
-		A1A1A1A1A1A1A1A1A1A1A106 /* QuickDrawTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = QuickDrawTests;
-			sourceTree = "<group>";
-		};
+		A1A1A1A1A1A1A1A1A1A1A105 /* QuickDraw */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (A1A1A1A1A1A1A1A1A1A1A11B /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = QuickDraw; sourceTree = "<group>"; };
+		A1A1A1A1A1A1A1A1A1A1A106 /* QuickDrawTests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = QuickDrawTests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -160,7 +149,6 @@
 			);
 			mainGroup = A1A1A1A1A1A1A1A1A1A1A107;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
 			productRefGroup = A1A1A1A1A1A1A1A1A1A1A108 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -340,6 +328,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A8JP3M8J8G;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = QuickDraw/Info.plist;
@@ -367,6 +356,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A8JP3M8J8G;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = QuickDraw/Info.plist;
